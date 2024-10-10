@@ -1,9 +1,9 @@
 {
     "id": "B839706E",
-    "path": "C:/Users/崔庆轩喜欢摆/Desktop/LastSta_Liu/Rprogramming/PracticeAfterClass/R/Shiny/Server.R",
-    "project_path": "Server.R",
+    "path": "C:/Users/崔庆轩喜欢摆/Desktop/LastSta_Liu/Rprogramming/PracticeAfterClass/R/Shiny/server.R",
+    "project_path": "server.R",
     "type": "r_source",
-    "hash": "851755267",
+    "hash": "71452185",
     "contents": "",
     "dirty": false,
     "created": 1728424057556.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "25,0",
-        "scrollLine": "12"
+        "cursorPosition": "56,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1728425983,
+    "lastKnownWriteTime": 1728467542,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1728425983457,
+    "last_content_update": 1728467542,
     "read_only": false,
     "read_only_alternatives": []
 }

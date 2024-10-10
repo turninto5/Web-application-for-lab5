@@ -13,7 +13,6 @@ rkolada <- setRefClass(
   methods = list(
     # constructor
     initialize = function() {
-      cat("rkolada object created.\n")
       .self$api <- "http://api.kolada.se/v2"
       .self$kpiData <- "data/kpi"
     },
@@ -32,10 +31,10 @@ rkolada <- setRefClass(
       stop("Error: Unable to fetch data. Status code: ", status_code(response))
     }
 
-    kpiData <- parseJson(response)
+    data <- parseJson(response)
 
     # Return the structured KPI data as a data frame
-    return(as.data.frame(kpiData))
+    return(as.data.frame(data))
   },
 
   parseJson = function(response){
@@ -54,4 +53,17 @@ rkolada <- setRefClass(
   )
 
 )
+
+
+server <- function(input, output) {
+  kolada <- rkolada$new()
+
+  observeEvent(input$search, {
+    data <- kolada$GetKpiData(kpi_id = input$kpi, municipality_id = input$municipality, year = input$year)
+
+    output$demo <- renderDataTable({
+     datatable(data)
+    })
+  })
+}
 
