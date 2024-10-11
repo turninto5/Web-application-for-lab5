@@ -58,12 +58,14 @@ rkolada <- setRefClass(
 server <- function(input, output) {
   kolada <- rkolada$new()
 
-  observeEvent(input$search, {
+  observeEvent(input$search_kw, {
     data <- kolada$GetKpiData(kpi_id = input$kpi, municipality_id = input$municipality, year = input$year)
 
     output$demo <- renderDataTable({
      datatable(data)
     })
   })
+
+  
 }
 
