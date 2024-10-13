@@ -16,17 +16,31 @@ rkolada <- setRefClass(
       .self$api <- "http://api.kolada.se/v2"
     },
 
-    GetKpiData = function(kpi_id = NA, municipality_id = NA, year = NA) {
+  GetKpiSearchData = function(kpi_id = NA) {
+    .self$kpiData <- getKpiData(kpi_id)
+    return(.self$kpiData)
+  },
 
-    # Construct the full API URL using provided KPI ID, Municipality ID, and Year
-    queryUrl <- paste0(.self$api, "/", .self$kpiData, "/", kpi_id,"/year/", year)
-    # https://api.kolada.se/v2/data/kpi/N00003/year/2023
+  getKpiData = function(kpiString){
+    if(!is.character(kpiString)){
+      print("Error: Shitty Kpi name")
+    }
+    queryUrl <- paste0(.self$api, "/kpi?title=", URLencode(kpiString))
+    .self$kpiData <- (.self$apiRequest(queryUrl))
+  },
+
+  getManicipalityData = function(municipalityString){
+  queryUrl <- paste0(.self$api, "/municipality?title=", URLencode(municipalityString))
+  return(.self$apiRequest(queryUrl))
+  },
+
 
     # Make the GET request to the Kolada API
     response <- GET(queryUrl)
     # Check if the request was successful
     if (status_code(response) != 200) {
       sprintf("Error: Unable to fetch data. Status code: ", status_code(response))
+      print(response)
     }
     data <- .self$parseJson(response)
     # Return the structured KPI data as a data frame
@@ -53,12 +67,62 @@ rkolada <- setRefClass(
 server <- function(input, output) {
   kolada <- rkolada$new()
 
-  observeEvent(input$search, {
-    data <- kolada$GetData(kpi_id = input$kpi, municipality_id = input$municipality, year = input$year)
+  # Reactive value to track which table to show
+  currentTable <- reactiveVal("main")
 
+  observeEvent(input$search, {
+    print(currentTable())
+    data <- kolada$GetKpiSearchData(kpi_id = input$kpi)
+
+      
     output$demo <- renderDataTable({
-     datatable(data)
+     datatable(data, selection = "single")
     })
+    currentTable("main")
+  })
+
+  observeEvent(input$demo_rows_selected, {
+        print(currentTable())
+    selected <- input$demo_rows_selected  # Get selected row index
+    if (!is.null(selected)) {
+      # Display the selected row data (you can customize what to do with it)
+
+    print(selected)
+    # Fetch the original KPI data again
+    kpiData <- kolada$kpiData
+    
+    # Retrieve the selected row's data from the data table
+    selectedData <- kpiData[selected, ]
+
+    data <- kolada$GetAllData(kpi_id = selectedData[["id"]], 
+      municipality = input$municipality, 
+      year = input$year
+    )
+    # Update the current table to "details"
+    currentTable("details")
+    output$detailsTable <- renderPrint({
+        print(data)  # Print the selected data
+      })
+      }else {
+      currentTable("main")
+    } 
+  })
+
+  # Render the appropriate table based on the currentTable value
+  output$mainTable <- renderUI({
+    if (currentTable() == "main") {
+      DTOutput("demo")
+    } else {
+      NULL  # Render nothing if not on the main table
+    }
+  })
+
+  output$detailsTableUI <- renderUI({
+    if (currentTable() == "details") {
+      verbatimTextOutput("detailsTable")  
+    } else {
+      NULL  # Render nothing if not on the details table
+    }
   })
 }
 

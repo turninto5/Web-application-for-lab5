@@ -11,185 +11,41 @@ uiMain <- page_fillable(
                 And if you want to learn further information"),
                 a("Go to Kolada", href = "https://www.kolada.se")
 
+
+ui <- fluidPage(
+  titlePanel("Shiny App with Sidebar"),
+
+  sidebarLayout(
+    sidebarPanel(
+      textInput(
+        inputId = "kpi",
+        label = "KPI search",
+        value = "Skatt",
+        placeholder = "Enter KPI ID for first input"),
+
+      actionButton(inputId = "search",
+                   label = "search"),
+
+      textInput(
+        inputId = "municipality",
+        value = "Lund",
+        label = "Municipality search",
+        placeholder = "Enter municipality ID for second input"),
+
+      textInput(
+        inputId = "year",
+        label = "Year",
+        value = "2009",
+        placeholder = "Enter year for third input")
     ),
-    nav_panel(title = "Search Data Based On ID",
-                h1("Input ID (Separated by string of many ids)"),
-                textInput(
-                    inputId = "kpi",
-                    label = "KPI ID",
-                    value = "N00003",
-                    placeholder = "Enter KPI ID for first input"
-                    ),
 
-                textInput(
-                    inputId = "municipality",
-                    label = "Municipality ID",
-                    value = "0114",
-                    placeholder = "Enter municipality ID for second input"
-                    ),
+    mainPanel(
+      h3("The data you selected:"),
+      uiOutput("mainTable"),  # Use UI output for the main table
+      uiOutput("detailsTableUI")  # Use UI output for the details table
 
-                textInput(
-                    inputId = "year",
-                    label = "Year",
-                    value = "2023",
-                    placeholder = "Enter year for third input"
-                    ),
-
-                actionButton(
-                    inputId = "search_id",
-                    label = "search"
-                    ),
-                DTOutput("idTable")
-    ),
-    nav_panel(title = "Search Data Based On Topics",
-                  selectInput(
-                    inputId = "entity",
-                    label = "Select entity below:",
-                    list("KPI" = "kpi", "KPI Group" = "kpi_groups", "Municipality" = "municipality", "Municipality Groups" = "municipality_groups", "OU" = "ou"),
-                    multiple = FALSE
-                ),
-
-                textInput(
-                    inputId = "title",
-                    label = "title",
-                    value = "Kommunindex för",
-                    placeholder = "Enter the keywords you want to search"
-                ),
-
-                actionButton(
-                    inputId = "search_kw",
-                    label = "search keywords"
-                ),
-
-                DTOutput("kwTable")
-    ),
-  ),
-  id = "main"
+    )
+  )
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
