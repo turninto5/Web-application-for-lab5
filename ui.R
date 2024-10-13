@@ -10,30 +10,33 @@ ui <- fluidPage(
     sidebarPanel(
       textInput(
         inputId = "kpi",
-        label = "KPI ID",
-        value = "N00003",
+        label = "KPI search",
+        value = "Skatt",
         placeholder = "Enter KPI ID for first input"),
+
+      actionButton(inputId = "search",
+                   label = "search"),
 
       textInput(
         inputId = "municipality",
-        label = "Municipality ID",
-
-
+        value = "Lund",
+        label = "Municipality search",
         placeholder = "Enter municipality ID for second input"),
 
       textInput(
         inputId = "year",
         label = "Year",
-        value = "2023",
-        placeholder = "Enter year for third input"),
-
-      actionButton(inputId = "search",
-                   label = "search")
+        value = "2009",
+        placeholder = "Enter year for third input")
     ),
 
     mainPanel(
       h3("The data you selected:"),
-      dataTableOutput("demo")
+      uiOutput("mainTable"),  # Use UI output for the main table
+      uiOutput("detailsTableUI")  # Use UI output for the details table
+
     )
   )
 )
+
+
