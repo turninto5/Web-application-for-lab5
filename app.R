@@ -12,4 +12,4 @@ library(DT)
 source("server.R")
 source("uiMain.R")
 
-shinyApp(ui = uiMain, server = function(input, output){})
+shinyApp(ui = uiMain, server = server)

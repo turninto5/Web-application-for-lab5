@@ -13,38 +13,46 @@ uiMain <- page_fillable(
 
     ),
     nav_panel(title = "Search Data Based On ID",
-                h1("Input ID"),
+                h1("Input ID (Separated by string of many ids)"),
                 textInput(
                     inputId = "kpi",
                     label = "KPI ID",
-                    value = "example: N00003",
+                    value = "N00003",
                     placeholder = "Enter KPI ID for first input"
                     ),
 
                 textInput(
                     inputId = "municipality",
                     label = "Municipality ID",
+                    value = "0114",
                     placeholder = "Enter municipality ID for second input"
                     ),
 
                 textInput(
                     inputId = "year",
                     label = "Year",
-                    value = "example: 2023",
+                    value = "2023",
                     placeholder = "Enter year for third input"
                     ),
 
                 actionButton(
-                    inputId = "search",
+                    inputId = "search_id",
                     label = "search"
                     ),
-                dataTableOutput("idTable")
+                DTOutput("idTable")
     ),
     nav_panel(title = "Search Data Based On Topics",
+                  selectInput(
+                    inputId = "entity",
+                    label = "Select entity below:",
+                    list("KPI" = "kpi", "KPI Group" = "kpi_groups", "Municipality" = "municipality", "Municipality Groups" = "municipality_groups", "OU" = "ou"),
+                    multiple = FALSE
+                ),
+
                 textInput(
-                    inputId = "keywords",
-                    label = "keywords",
-                    value = "example: Män som tar ut tillfällig föräldrapenning",
+                    inputId = "title",
+                    label = "title",
+                    value = "Kommunindex för",
                     placeholder = "Enter the keywords you want to search"
                 ),
 
@@ -53,10 +61,135 @@ uiMain <- page_fillable(
                     label = "search keywords"
                 ),
 
-                dataTableOutput("kwTable")
+                DTOutput("kwTable")
     ),
   ),
   id = "main"
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
