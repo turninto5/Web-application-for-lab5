@@ -10,6 +10,9 @@
 library(shiny)
 library(DT)
 source("server.R")
-source("uiMain.R")
+source("ui.R")
 
-shinyApp(ui = uiMain, server = server)
+shinyAppDir(getwd())
+shinyApp(ui = ui, server = server)
+
+
