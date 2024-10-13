@@ -8,59 +8,44 @@ rkolada <- setRefClass(
   "rkolada",
   fields = list(
     api = "character",
-    kpiData = "character"
-
+    kpiData = "data.frame",
+    manicipalityData = "data.frame"
   ),
   methods = list(
     initialize = function() {
       .self$api <- "http://api.kolada.se/v2"
-      .self$kpiData <- "data/kpi"
     },
 
-    getDataID = function(kpi_id = NA, municipality_id = NA, year = NA) {
-    queryUrl <- paste0(.self$api, "/", .self$kpiData, "/", kpi_id, "/municipality/", municipality_id, "/year/", year)
-    print(queryUrl)
+    GetKpiData = function(kpi_id = NA, municipality_id = NA, year = NA) {
+
+    # Construct the full API URL using provided KPI ID, Municipality ID, and Year
+    queryUrl <- paste0(.self$api, "/", .self$kpiData, "/", kpi_id,"/year/", year)
+    # https://api.kolada.se/v2/data/kpi/N00003/year/2023
+
+    # Make the GET request to the Kolada API
     response <- GET(queryUrl)
+    # Check if the request was successful
     if (status_code(response) != 200) {
-      stop("Error: Unable to fetch data. Status code: ", status_code(response))
+      sprintf("Error: Unable to fetch data. Status code: ", status_code(response))
     }
-    data <- parseJson(response)
-    values <- data$values[[1]]
-    data$values <- NULL
-    data$value <- values$value
-    data$gender <- values$gender
-    data$status <- values$status
-    data$count <- values$count
+    data <- .self$parseJson(response)
+    # Return the structured KPI data as a data frame
     return(as.data.frame(data))
-    },
+  },
 
-    getDataKW = function(entity  = NA, title = NA){
-      title_en = URLencode(title)
-      queryUrl <- paste0(.self$api, "/", entity, "?title=", title_en)
-      print(queryUrl)
-      response <- GET(queryUrl)
-      if (status_code(response) != 200){
-        stop("Error: Unable to fetch data. Status code: ", status_code(response))
-      }
-      data <- parseJson(response)
+  parseJson = function(response){
+    # Parse the JSON response into an R list
+    dataJson <- content(response, as = "text", encoding = "UTF-8")
+    dataList <- fromJSON(dataJson)
 
-
-      return(as.data.frame(data))
-    },
-
-    parseJson = function(response){
-      # Parse the JSON response into an R list
-      dataJson <- content(response, as = "text", encoding = "UTF-8")
-      dataList <- fromJSON(dataJson)
-
-      # Extract the relevant KPI data from the JSON structure
-      if (length(dataList$values) == 0) {
-        return("No data available for the specified query.")
-      }
-
-      # Convert the KPI data into a data frame for easier analysis
-      return(dataList$values)
+    # Extract the relevant KPI data from the JSON structure
+    if (length(dataList$values) == 0) {
+      return("No data available for the specified query.")
     }
+
+    # Convert the KPI data into a data frame for easier analysis
+    return(dataList$values)
+  }
   )
 )
 
@@ -68,17 +53,11 @@ rkolada <- setRefClass(
 server <- function(input, output) {
   kolada <- rkolada$new()
 
-  observeEvent(input$search_id, {
-    data <- kolada$getDataID(kpi_id = input$kpi, municipality_id = input$municipality, year = input$year)
-    output$idTable <- renderDataTable({
-     datatable(data)
-    })
-  })
+  observeEvent(input$search, {
+    data <- kolada$GetData(kpi_id = input$kpi, municipality_id = input$municipality, year = input$year)
 
-  observeEvent(input$search_kw, {
-    data <- kolada$getDataKW(title = input$title, entity = input$entity)
-    output$kwTable <-renderDataTable({
-      datatable(data)
+    output$demo <- renderDataTable({
+     datatable(data)
     })
   })
 }
